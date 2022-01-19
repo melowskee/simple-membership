@@ -21905,12 +21905,28 @@ __webpack_require__.r(__webpack_exports__);
         phone: '',
         file: ''
       },
-      branches: branches
+      branches: branches,
+      preview: null,
+      image: null
     };
   },
   methods: {
-    onChange: function onChange(e) {
-      this.form.file = e.target.files[0];
+    previewImage: function previewImage(event) {
+      var _this = this;
+
+      var input = event.target;
+
+      if (input.files) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+          _this.preview = e.target.result;
+        };
+
+        this.image = input.files[0];
+        reader.readAsDataURL(input.files[0]);
+        this.form.file = event.target.files[0];
+      }
     },
     formSubmit: function formSubmit(e) {
       e.preventDefault();
@@ -23077,8 +23093,23 @@ var _hoisted_14 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElement
 var _hoisted_15 = {
   "class": "mt-1"
 };
+var _hoisted_16 = {
+  "class": "border p-2 mt-3"
+};
 
-var _hoisted_16 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
+var _hoisted_17 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", null, "Preview Here:", -1
+/* HOISTED */
+);
+
+var _hoisted_18 = ["src"];
+var _hoisted_19 = {
+  "class": "mb-0"
+};
+var _hoisted_20 = {
+  "class": "mb-0"
+};
+
+var _hoisted_21 = /*#__PURE__*/(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
   type: "submit",
   "class": "inline-flex items-center px-4 py-2 text-xs font-semibold tracking-widest text-white uppercase bg-gray-800 rounded-md border border-transparent ring-gray-300 transition duration-150 ease-in-out hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring disabled:opacity-25"
 }, " Create ", -1
@@ -23166,14 +23197,31 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   /* NEED_PATCH */
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.form.phone]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", null, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
     type: "file",
-    name: "photo",
-    "class": "form-control",
+    accept: "image/*",
     onChange: _cache[5] || (_cache[5] = function () {
-      return $options.onChange && $options.onChange.apply($options, arguments);
-    })
+      return $options.previewImage && $options.previewImage.apply($options, arguments);
+    }),
+    "class": "form-control-file",
+    id: "my-file"
   }, null, 32
   /* HYDRATE_EVENTS */
-  )])])]), _hoisted_16], 32
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_16, [_hoisted_17, $data.preview ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)(vue__WEBPACK_IMPORTED_MODULE_0__.Fragment, {
+    key: 0
+  }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("img", {
+    src: $data.preview,
+    "class": "img-fluid",
+    style: {
+      "max-width": "200px"
+    }
+  }, null, 8
+  /* PROPS */
+  , _hoisted_18), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_19, "file name: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.image.name), 1
+  /* TEXT */
+  ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("p", _hoisted_20, "size: " + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.image.size / 1024) + "KB", 1
+  /* TEXT */
+  )], 64
+  /* STABLE_FRAGMENT */
+  )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)])])])]), _hoisted_21], 32
   /* HYDRATE_EVENTS */
   )], 64
   /* STABLE_FRAGMENT */

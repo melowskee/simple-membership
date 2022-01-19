@@ -58,8 +58,15 @@
             <div>
                 <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
                 <div class="mt-1">
-                    <input type="file" name="photo" class="form-control" v-on:change="onChange">
-                    
+                   <input type="file" accept="image/*" @change="previewImage" class="form-control-file" id="my-file">
+                    <div class="border p-2 mt-3">
+                    <p>Preview Here:</p>
+                    <template v-if="preview">
+                      <img :src="preview" class="img-fluid" style="max-width: 200px;"/>
+                      <p class="mb-0">file name: {{ image.name }}</p>
+                      <p class="mb-0">size: {{ image.size/1024 }}KB</p>
+                    </template>
+                  </div>
                 </div>
             </div>
 
@@ -79,48 +86,53 @@ import useBranches from "../../composables/branches";
 import { onMounted } from "vue";
 
 export default {
-
     data(){
-    const { branches, getBranches } = useBranches()
-        
+        const { branches, getBranches } = useBranches()
         onMounted(getBranches)
-      return {
-        form: {
-            first_nane: '',
-            last_name: '',
-            branch_id: '',
-            email: '',
-            phone: '',
-            file: ''
-        },
-        branches
-      }
-    },
-
-        methods: {
-            onChange(e) {
-                this.form.file = e.target.files[0];
+        return {
+            form: {
+                first_nane: '',
+                last_name: '',
+                branch_id: '',
+                email: '',
+                phone: '',
+                file: ''
             },
-            formSubmit(e) {
-                e.preventDefault();
-                let existingObj = this;
-
-                const config = {
-                    headers: {
-                        'content-type': 'multipart/form-data'
-                    }
+            branches,
+            preview: null,
+            image: null
+        } 
+    },
+    methods: {
+        previewImage: function(event) {
+            var input = event.target;
+            if (input.files) {
+                var reader = new FileReader();
+                reader.onload = (e) => {
+                    this.preview = e.target.result;
                 }
-
-                let data = new FormData();
-                data.append('file', this.form.file);
-                data.append('branch_id', this.form.branch_id);
-                data.append('first_name', this.form.first_name);
-                data.append('last_name', this.form.last_name);
-                data.append('email', this.form.email);
-                data.append('phone', this.form.phone);
-                axios.post('/api/members', data, config)
-
+                this.image=input.files[0];
+                reader.readAsDataURL(input.files[0]);
+                this.form.file = event.target.files[0];
             }
+        },
+        formSubmit(e) {
+            e.preventDefault();
+            let existingObj = this;
+            const config = {
+                headers: {
+                    'content-type': 'multipart/form-data'
+                }
+            }
+            let data = new FormData();
+            data.append('file', this.form.file);
+            data.append('branch_id', this.form.branch_id);
+            data.append('first_name', this.form.first_name);
+            data.append('last_name', this.form.last_name);
+            data.append('email', this.form.email);
+            data.append('phone', this.form.phone);
+            axios.post('/api/members', data, config)
         }
+    }
 }
 </script>
