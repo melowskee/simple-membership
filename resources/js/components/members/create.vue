@@ -7,7 +7,7 @@
   </div>
 </div>
 
-    <form class="space-y-6" @submit.prevent="saveMember">
+    <form class="space-y-6" @submit="formSubmit" enctype="multipart/form-data">
         <div class="space-y-4 rounded-md shadow-sm">
             <div>
                 <label for="first_name" class="block text-sm font-medium text-gray-700">First Name</label>
@@ -79,27 +79,27 @@ import useBranches from "../../composables/branches";
 import { onMounted } from "vue";
 
 export default {
-    setup() {
-        const form = reactive({
-            'first_name': '',
-            'last_name': '',
-            'branch_id': '',
-            'email': '',
-            'phone': '',
-            'file': ''
-        })
 
-        const { errors, storeMember } = useMembers()
-        const { branches, getBranches } = useBranches()
+    data(){
+    const { branches, getBranches } = useBranches()
         
         onMounted(getBranches)
-
-        const saveMember = async () => {
-            await storeMember({...form});
+      return {
+        form: {
+            first_nane: '',
+            last_name: '',
+            branch_id: '',
+            email: '',
+            phone: '',
+            file: ''
         },
+        branches
+      }
+    },
+
         methods: {
             onChange(e) {
-                this.file = e.target.files[0];
+                this.form.file = e.target.files[0];
             },
             formSubmit(e) {
                 e.preventDefault();
@@ -112,24 +112,15 @@ export default {
                 }
 
                 let data = new FormData();
-                data.append('file', this.file);
+                data.append('file', this.form.file);
+                data.append('branch_id', this.form.branch_id);
+                data.append('first_name', this.form.first_name);
+                data.append('last_name', this.form.last_name);
+                data.append('email', this.form.email);
+                data.append('phone', this.form.phone);
+                axios.post('/api/members', data, config)
 
-                axios.post('/upload', data, config)
-                    .then(function (res) {
-                        existingObj.success = res.data.success;
-                    })
-                    .catch(function (err) {
-                        existingObj.output = err;
-                    });
             }
         }
-
-        return {
-            form,
-            errors,
-            branches,
-            saveMember
-        }
-    }
 }
 </script>
